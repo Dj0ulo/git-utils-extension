@@ -1,0 +1,34 @@
+{
+  "name": "git-utils-extension",
+  "displayName": "Git Utils",
+  "description": "Adds utility icons to the Source Control view.",
+  "version": "0.1.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "main": "./extension.js",
+  "activationEvents": [
+    "onCommand:git-utils.undoCommit"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "git-utils.undoCommit",
+        "title": "Undo Last Commit",
+        "icon": "$(discard)"
+      }
+    ],
+    "menus": {
+      "scm/title": [
+        {
+          "command": "git-utils.undoCommit",
+          "when": "scmProvider == 'git'",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0"
+  }
+}
