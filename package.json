@@ -9,7 +9,11 @@
   "main": "./extension.js",
   "activationEvents": [
     "onCommand:git-utils.undoCommit",
-    "onCommand:git-utils.openFileInWriteMode"
+    "onCommand:git-utils.openFileInWriteMode",
+    "onView:fileHistory",
+    "onCommand:git-utils.copyCommitId",
+    "onCommand:git-utils.openInGitHub",
+    "onCommand:git-utils.showLineHistory"
   ],
   "contributes": {
     "commands": [
@@ -22,6 +26,24 @@
         "command": "git-utils.openFileInWriteMode",
         "title": "Open File in Write Mode",
         "icon": "$(edit)"
+      },
+      {
+        "command": "git-utils.showFileHistory",
+        "title": "Show File History",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "git-utils.copyCommitId",
+        "title": "Copy Full Commit ID"
+      },
+      {
+        "command": "git-utils.openInGitHub",
+        "title": "Open in GitHub"
+      },
+      {
+        "command": "git-utils.showLineHistory",
+        "title": "Show Line History",
+        "icon": "$(refresh)"
       }
     ],
     "menus": {
@@ -30,6 +52,58 @@
           "command": "git-utils.undoCommit",
           "when": "scmProvider == 'git'",
           "group": "navigation"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "git-utils.showFileHistory",
+          "when": "resourceExtname != '.git'",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "git-utils.showLineHistory",
+          "when": "editorHasSelection",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "git-utils.copyCommitId",
+          "when": "(view == fileHistory || view == lineHistory) && viewItem == 'commit'",
+          "group": "1_copy"
+        },
+        {
+          "command": "git-utils.openInGitHub",
+          "when": "(view == fileHistory || view == lineHistory) && viewItem == 'commit'",
+          "group": "2_github"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "git-utils.showFileHistory",
+          "when": "view == fileHistory",
+          "group": "navigation"
+        },
+        {
+          "command": "git-utils.showLineHistory",
+          "when": "view == lineHistory",
+          "group": "navigation"
+        }
+      ]
+    },
+    "views": {
+      "scm": [
+        {
+          "id": "fileHistory",
+          "name": "File History",
+          "when": "git-utils.showFileHistoryView"
+        },
+        {
+          "id": "lineHistory",
+          "name": "Line History",
+          "when": "git-utils.showLineHistoryView"
         }
       ]
     }
