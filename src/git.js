@@ -16,10 +16,13 @@ function parseGitLog(stdout, fileUri) {
   if (!stdout) {
     return [];
   }
-  return stdout.trim().split('\x01').filter(line => line).map(commitData => {
+  const commits = stdout.trim().split('\x01').filter(line => line);
+  return commits.map((commitData, index) => {
     const [shortHash, fullHash, author, date, subject] = commitData.trim().split('\x00')[0].split('\x1f');
     const label = `${subject} – ${author} (${date})`;
-    return new Commit(label, shortHash, fullHash, fileUri);
+    const previousCommitData = commits[index + 1];
+    const previousHash = previousCommitData ? previousCommitData.trim().split('\x00')[0].split('\x1f')[1] : null;
+    return new Commit(label, shortHash, fullHash, fileUri, previousHash);
   });
 }
 
