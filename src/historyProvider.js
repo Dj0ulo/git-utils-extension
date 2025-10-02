@@ -1,6 +1,5 @@
 const vscode = require('vscode');
-const path = require('path');
-const { execGit, parseGitLog } = require('./git');
+const { lineBlameHistory, fileHistory } = require('./git');
 
 class HistoryProvider {
   constructor(fileUri, lineNumber) {
@@ -23,18 +22,10 @@ class HistoryProvider {
       return [];
     }
 
-    const cwd = path.dirname(this.fileUri.fsPath);
-    const command = this.lineNumber
-      ? `git log -L ${this.lineNumber},${this.lineNumber}:${this.fileUri.fsPath} --pretty=format:"%x01%h%x1f%H%x1f%an%x1f%ar%x1f%s%x00"`
-      : `git log --follow --pretty=format:"%x01%h%x1f%H%x1f%an%x1f%ar%x1f%s%x00" -- ${this.fileUri.fsPath}`;
-
-    try {
-      const { stdout } = await execGit(command, { cwd });
-      return parseGitLog(stdout, this.fileUri);
-    } catch (err) {
-      vscode.window.showErrorMessage(`Error getting history: ${err.message}`);
-      return [];
+    if (this.lineNumber) {
+        return await lineBlameHistory(this.fileUri.fsPath, this.lineNumber);
     }
+    return await fileHistory(this.fileUri.fsPath);
   }
 }
 
